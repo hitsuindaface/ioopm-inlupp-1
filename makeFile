@@ -1,0 +1,12 @@
+
+clean:
+	rm -f *.o hashtest unit_tests utils hash_table
+
+hashtest: hashtable.o unit_tests.o
+	gcc -g -Wall unit_tests.c -lcunit hash_table.c -o hashtest
+
+hashtable.o: hash_table.c hash_table.h
+	gcc -c -g -Wall hash_table.c
+
+unit_tests.o: unit_tests.c
+	gcc -c -g -Wall unit_tests.c
