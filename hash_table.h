@@ -1,24 +1,20 @@
 #pragma once
 #include <stdbool.h>
 
-<<<<<<< HEAD == == == =
+/**
+ * @file hash_table.h
+ * @author Susanna och Alex
+ * @date 1 Sep 2022
+ * @brief Simple hash table that maps integer keys to string values.
+ *
+ * Here typically goes a more extensive explanation of what the header
+ * defines. Doxygens tags are words preceeded by either a backslash @\
+ * or by an at symbol @@.
+ *
+ * @see $CANVAS_OBJECT_REFERENCE$/assignments/gb54499f3b7b264e3af3b68c756090f52
+ */
 
-
->>>>>>> 6ec94e53762040073c7d3e04f4c51bd1a35e46dd
-               /**
-                * @file hash_table.h
-                * @author Susanna och Alex
-                * @date 1 Sep 2022
-                * @brief Simple hash table that maps integer keys to string values.
-                *
-                * Here typically goes a more extensive explanation of what the header
-                * defines. Doxygens tags are words preceeded by either a backslash @\
-                * or by an at symbol @@.
-                *
-                * @see $CANVAS_OBJECT_REFERENCE$/assignments/gb54499f3b7b264e3af3b68c756090f52
-                */
-
-    typedef struct hash_table ioopm_hash_table_t;
+typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
 typedef bool (*ioopm_predicate)(int key, char *value, void *extra);
 typedef void (*ioopm_apply_function)(int key, char **value, void *extra);
@@ -35,7 +31,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t **ht);
 /// @param ht hash table operated upon
 /// @param key key to insert
 /// @param value value to insert
-/// @return boolean indicationg success
+/// @return boolean indicating success
 bool ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value);
 
 /// @brief lookup value for key in hash table ht
@@ -121,3 +117,5 @@ struct option
   bool success;
   char *value;
 };
+
+void add_char(int key, char **value, void *x);
