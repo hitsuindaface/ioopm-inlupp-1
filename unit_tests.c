@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "hash_table.h"
 #include <stdlib.h>
+#include <string.h>
 
 int init_suite(void)
 {
@@ -311,37 +312,110 @@ void test_apply_to_all()
   ioopm_hash_table_insert(ht, 1, val2);
   ioopm_hash_table_insert(ht, 2, val3);
 
-  ioopm_hash_table_apply_to_all(ht, add_char, ".");
+  ioopm_hash_table_apply_to_all(ht, value_hej, NULL);
 
   option_t first_lookup = ioopm_hash_table_lookup(ht, 0);
   char *first_value = first_lookup.value;
-  CU_ASSERT_STRING_EQUAL(first_value, "cola.");
+  CU_ASSERT_STRING_EQUAL(first_value, "hej");
 
   option_t second_lookup = ioopm_hash_table_lookup(ht, 1);
   char *second_value = second_lookup.value;
-  CU_ASSERT_STRING_EQUAL(second_value, "sprite.");
+  CU_ASSERT_STRING_EQUAL(second_value, "hej");
 
   option_t third_lookup = ioopm_hash_table_lookup(ht, 2);
   char *third_value = third_lookup.value;
-  CU_ASSERT_STRING_EQUAL(third_value, "hallonsoda.");
+  CU_ASSERT_STRING_EQUAL(third_value, "hej");
 
   ioopm_hash_table_destroy(&ht);
 }
 
-/*
 void test_any()
 {
-  ioopm_hash_table_t ht = ioopm_hash_table_create();
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
 
+  //just one 
   int key1 = 1;
   int key2 = 11;
   int key3 = 132;
   int key4 = 14;
+
+  char *value1 = "kallt";
+  char *value2 = "kallt";
+  char *value3 = "varmt";
+  char *value4 = "bingo!";
+
+  ioopm_hash_table_insert(ht, key1, value1);
+  ioopm_hash_table_insert(ht, key2, value2);
+  ioopm_hash_table_insert(ht, key3, value3);
+  ioopm_hash_table_insert(ht, key4, value4);
+
+
+  bool has_value1 = ioopm_hash_table_any(ht, search_value, "bingo!");
+  CU_ASSERT_TRUE(has_value1);
+
+  value1 = "bingo!";
+  value2 = "bingo!";
+  value3 = "bingo!";
+  value4 = "bingo!";
+
+  ioopm_hash_table_insert(ht, key1, value1);
+  ioopm_hash_table_insert(ht, key2, value2);
+  ioopm_hash_table_insert(ht, key3, value3);
+  ioopm_hash_table_insert(ht, key4, value4);
+  
+  bool has_value2 = ioopm_hash_table_any(ht, search_value, "bingo!");
+  CU_ASSERT_TRUE(has_value2);
+
+  bool has_value3 = ioopm_hash_table_any(ht, search_value, "kallt");
+  CU_ASSERT_FALSE(has_value3);
+
+
+  ioopm_hash_table_destroy(&ht);
 }
 
 void test_all()
 {
-} */
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+
+  //just one 
+  int key1 = 1;
+  int key2 = 11;
+  int key3 = 132;
+  int key4 = 14;
+
+  char *value1 = "kallt";
+  char *value2 = "kallt";
+  char *value3 = "varmt";
+  char *value4 = "bingo!";
+
+  ioopm_hash_table_insert(ht, key1, value1);
+  ioopm_hash_table_insert(ht, key2, value2);
+  ioopm_hash_table_insert(ht, key3, value3);
+  ioopm_hash_table_insert(ht, key4, value4);
+
+
+  bool has_value1 = ioopm_hash_table_all(ht, search_value, "bingo!");
+  CU_ASSERT_FALSE(has_value1);
+
+  value1 = "bingo!";
+  value2 = "bingo!";
+  value3 = "bingo!";
+  value4 = "bingo!";
+
+  ioopm_hash_table_insert(ht, key1, value1);
+  ioopm_hash_table_insert(ht, key2, value2);
+  ioopm_hash_table_insert(ht, key3, value3);
+  ioopm_hash_table_insert(ht, key4, value4);
+  
+  bool has_value2 = ioopm_hash_table_all(ht, search_value, "bingo!");
+  CU_ASSERT_TRUE(has_value2);
+
+  bool has_value3 = ioopm_hash_table_all(ht, search_value, "kallt");
+  CU_ASSERT_FALSE(has_value3);
+
+  ioopm_hash_table_destroy(&ht);
+} 
+
 
 int main()
 {
@@ -376,7 +450,9 @@ int main()
       (CU_add_test(my_test_suite, "Test hashtable has key ", test_has_keys) == NULL) ||
       (CU_add_test(my_test_suite, "Test hashtable has value ", test_has_values) == NULL) ||
       (CU_add_test(my_test_suite, "Test apply function to entries ", test_apply_to_all) == NULL) ||
-      0)
+      (CU_add_test(my_test_suite, "Test apply predicate to any entry ", test_any) == NULL) ||
+      (CU_add_test(my_test_suite, "Test apply predicate to all entries ", test_all) == NULL) ||
+      0) 
   {
     // If adding any of the tests fails, we tear down CUnit and exit
     CU_cleanup_registry();

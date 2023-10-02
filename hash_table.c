@@ -290,11 +290,13 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)
   int size = ht->entries;
   int *keys = ioopm_hash_table_keys(ht);
   char **values = ioopm_hash_table_values(ht);
-  bool result = true;
-  for (int i = 0; i < size && result; ++i)
+  bool result = false;
+  for (int i = 0; i < size && !result; ++i)
   {
     result = result || P(keys[i], values[i], x);
   }
+  free(keys);
+  free(values);
   return result;
 }
 
@@ -308,14 +310,16 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate P, void *x)
   {
     result = result && P(keys[i], values[i], x);
   }
+  free(keys);
+  free(values);
   return result;
 }
 
-void add_char(int key, char **value, void *x)
-{
-  char *ch_pointer = x;
-  int str_len = strlen(*value);
-  // adding dot to string
-  value[str_len] = ch_pointer;
-  value[str_len + 1] = NULL;
+void value_hej (int key, char **value, void *x){
+  *value="hej";
 }
+
+bool search_value(int key, char *value, void *x) {
+  return strcmp(value, x) == 0;
+}
+

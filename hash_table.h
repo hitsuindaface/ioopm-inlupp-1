@@ -118,4 +118,6 @@ struct option
   char *value;
 };
 
-void add_char(int key, char **value, void *x);
+void value_hej (int key, char **value, void *x);
+
+bool search_value(int key, char *value, void *x);
