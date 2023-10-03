@@ -425,7 +425,7 @@ int main()
 
   // We then create an empty test suite and specify the name and
   // the init and cleanup functions
-  CU_pSuite my_test_suite = CU_add_suite("My awesome test suite", init_suite, clean_suite);
+  CU_pSuite my_test_suite = CU_add_suite("Hash table test suite", init_suite, clean_suite);
   if (my_test_suite == NULL)
   {
     // If the test suite could not be added, tear down CUnit and exit

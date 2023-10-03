@@ -13,3 +13,13 @@ hashtable.o: hash_table.c hash_table.h
 
 unit_tests.o: unit_tests.c
 	gcc -c -g -Wall unit_tests.c
+
+
+linktest: linked_list.o linked_test.o
+	gcc -g -Wall linked_test.c -lcunit linked_list.c -o linktest
+
+linked_list.o: linked_list.c linked_list.h
+	gcc -c -g -Wall linked_list.c
+
+linked_test.o: linked_list.c linked_list.h
+	gcc -c -g -Wall linked_list.c
