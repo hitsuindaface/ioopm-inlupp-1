@@ -2,6 +2,9 @@
 clean:
 	rm -f *.o hashtest unit_tests utils hash_table
 
+memtest: hashtest 
+	valgrind --leak-check=full ./hashtest
+
 hashtest: hashtable.o unit_tests.o
 	gcc -g -Wall unit_tests.c -lcunit hash_table.c -o hashtest
 
