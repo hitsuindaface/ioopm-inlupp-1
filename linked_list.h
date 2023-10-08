@@ -1,6 +1,9 @@
 #pragma once
 #include <stdbool.h>
 
+typedef bool (*ioopm_int_predicate)( int value, void *extra);
+typedef int (*ioopm_apply_int_function)(int value, void *extra);
+
 typedef struct list ioopm_list_t;
 typedef struct link ioopm_link_t;
 
@@ -51,7 +54,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value);
 /// @param index the position in the list
 /// @return the value removed
 int ioopm_linked_list_remove(ioopm_list_t *list, int index);
-/*
+
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
@@ -65,6 +68,11 @@ int ioopm_linked_list_get(ioopm_list_t *list, int index);
 /// @param element the element sought
 /// @return true if element is in the list, else false
 bool ioopm_linked_list_contains(ioopm_list_t *list, int element);
+
+/// @brief Prints a link list
+/// @param list the linked list
+/// @return no return value
+void print_list(ioopm_list_t *lst);
 
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list the linked list
@@ -88,6 +96,10 @@ void ioopm_linked_list_clear(ioopm_list_t *list);
 /// @return true if prop holds for all elements in the list, else false
 bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra);
 
+bool isSpecificInt(int val, void* extra);
+
+
+
 /// @brief Test if a supplied property holds for any element in a list.
 /// The function returns as soon as the return value can be determined.
 /// @param list the linked list
@@ -100,4 +112,6 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 /// @param list the linked list
 /// @param fun the function to be applied
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
-void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra); */
+void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra); 
+
+int add_int( int num, void *extra);
