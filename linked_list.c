@@ -47,7 +47,7 @@ void ioopm_linked_list_prepend( ioopm_list_t *list, int num ) {
 
 void ioopm_linked_list_append( ioopm_list_t *list, int num ) {
     assert(list);
-    ioopm_link_t ins = list->last;
+    ioopm_link_t *ins = list->last;
     ins->next = link_create(num, NULL);
     list->size++;
 }
@@ -71,3 +71,29 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
         list->size++; 
     }
 };
+
+int ioopm_linked_list_remove(ioopm_list_t *list, int index) {
+    int currIndex = 0;
+    ioopm_link_t *curr = list->head;
+    ioopm_link_t *prev = NULL;
+    ioopm_link_t *nxt = NULL;
+    if ( index == 0 ) {
+        list->head = curr->next
+    } else if ( index == list->size - 1) {
+        curr = list->last;
+        list->last = NULL;
+    } else {
+        while ( currIndex < index-1 ) {
+            curr = curr->next;
+            currIndex++;
+        }
+        prev = curr; // index-1
+        curr = curr->next; // index
+        nxt = curr->next; // index+1
+        prev->next = nxt; // disconnect curr from list
+    }
+    int val = curr->value;
+    list->size -= 1;
+    free(curr);
+    return val;
+}

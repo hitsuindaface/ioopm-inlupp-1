@@ -30,7 +30,7 @@ void ioopm_linked_list_prepend(ioopm_list_t *list, int value);
 /// @param index the position in the list
 /// @param value the value to be inserted 
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value);
-/*
+
 /// @brief Remove an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
@@ -38,7 +38,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value);
 /// @param index the position in the list
 /// @return the value removed
 int ioopm_linked_list_remove(ioopm_list_t *list, int index);
-
+/*
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
