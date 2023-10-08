@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 int init_suite(void)
 {
   // Change this function if you want to do something *before* you
@@ -18,11 +19,47 @@ int clean_suite(void)
 }
 
 void test_list_create_destroy() {
-    ioopm_linked_list_t *lst = ioopm_linked_list_create();
+  ioopm_list_t *lst = ioopm_linked_list_create();
+  ioopm_linked_list_append(lst, 1);
+  ioopm_linked_list_append(lst, 2);
+  ioopm_linked_list_append(lst, 3);
+  CU_ASSERT_PTR_NOT_NULL(lst);
+  ioopm_linked_list_destroy(&lst);
+  CU_ASSERT_PTR_NULL(lst);
+}
+
+void test_link_append(){
+  ioopm_list_t *lst = ioopm_linked_list_create();
+  ioopm_linked_list_append(lst, 1);
+  ioopm_linked_list_append(lst, 2);
+  ioopm_linked_list_append(lst, 3);
+
+  ioopm_link_t *first_elem = lst->head;
+  ioopm_link_t *second_elem = first_elem->next;
+  ioopm_link_t *third_elem = second_elem->next;
+
+  int first_value = first_elem->value;
+  int second_value = second_elem->value;
+  int third_value = third_elem->value;
+
+  CU_ASSERT_EQUAL(first_value, 1);
+  CU_ASSERT_EQUAL(second_value, 2); 
+  CU_ASSERT_EQUAL(third_value, 3);
+}
+
+void test_link_
+
+void test_link_prepend(){
+  ioopm_list_t *lst = ioopm_linked_list_create();
     ioopm_linked_list_append(lst, 1);
-    CU_ASSERT_PTR_NOT_NULL(ht);
-    ioopm_linked_list_destroy(&ht);
-    CU_ASSERT_PTR_NULL(ht);
+    ioopm_linked_list_append(lst, 2);
+    ioopm_linked_list_append(lst, 3);
+    ioopm_linked_list_prepend(lst, 4);
+    ioopm_link_t *first_elem = lst->head;
+    int value = first_elem->value;
+    CU_ASSERT_EQUAL(value, 4);
+    CU_ASSERT_PTR_NOT_NULL(lst);
+    ioopm_linked_list_destroy(&lst);
 }
 
 
@@ -49,8 +86,9 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-      (CU_add_test(my_test_suite, "Create destroy linked list", test_linked_list_create_destroy) == NULL) ||
-      
+      (CU_add_test(my_test_suite, "Create destroy linked list", test_list_create_destroy) == NULL) ||
+      (CU_add_test(my_test_suite, "Append", test_link_append) == NULL) ||
+      (CU_add_test(my_test_suite, "Prepend", test_link_prepend) == NULL) ||
       0) 
   {
     // If adding any of the tests fails, we tear down CUnit and exit
