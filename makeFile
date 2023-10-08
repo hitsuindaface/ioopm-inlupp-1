@@ -2,7 +2,7 @@
 clean:
 	rm -f *.o hashtest unit_tests utils hash_table
 
-memtest: hashtest 
+memhashtest: hashtest
 	valgrind --leak-check=full ./hashtest
 
 hashtest: hashtable.o unit_tests.o
@@ -14,12 +14,14 @@ hashtable.o: hash_table.c hash_table.h
 unit_tests.o: unit_tests.c
 	gcc -c -g -Wall unit_tests.c
 
+memlinktest: linktest
+	valgrind --leak-check=full ./linktest
 
 linktest: linked_list.o linked_test.o
 	gcc -g -Wall linked_test.c -lcunit linked_list.c -o linktest
 
-linked_list.o: linked_list.c linked_list.h
+linked_list.o: linked_list.c linked_list.h iterator.h
 	gcc -c -g -Wall linked_list.c
 
-linked_test.o: linked_test.c 
+linked_test.o: linked_test.c
 	gcc -c -g -Wall linked_list.c

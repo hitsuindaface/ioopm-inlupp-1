@@ -2,51 +2,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "iterator.h"
 
-ioopm_list_t *ioopm_linked_list_create(void){
+/********************************************************************/
+/*                         Linked List                              */
+/********************************************************************/
+ioopm_list_t *ioopm_linked_list_create(void)
+{
     ioopm_list_t *lst = calloc(1, sizeof(ioopm_list_t));
     lst->head = NULL;
     lst->last = NULL;
     return lst;
 }
 
-ioopm_link_t *link_create(int value, ioopm_link_t *next){
+ioopm_link_t *link_create(int value, ioopm_link_t *next)
+{
     ioopm_link_t *link = calloc(1, sizeof(ioopm_link_t));
     link->value = value;
     link->next = next;
     return link;
 }
 
-void ioopm_linked_list_destroy(ioopm_list_t **list) {
+void ioopm_linked_list_destroy(ioopm_list_t **list)
+{
     assert(*list); // Check if the list exists
     ioopm_link_t *curr = (*list)->head;
 
-    while ( curr ) {
+    while (curr)
+    {
         ioopm_link_t *tmp = curr; // Define a temp variable so we can keep the loop going without terminating it
         curr = curr->next;
         free(tmp); // Free the link allocation
     }
     free(*list); // Free the list allocation
     *list = NULL;
-
 }
 
-void ioopm_linked_list_prepend( ioopm_list_t *list, int num ) {
+void ioopm_linked_list_prepend(ioopm_list_t *list, int num)
+{
     assert(list);
     list->head = link_create(num, list->head);
     list->size++;
 }
 
-void ioopm_linked_list_append( ioopm_list_t *list, int num ) {
+void ioopm_linked_list_append(ioopm_list_t *list, int num)
+{
     assert(list);
     ioopm_link_t *new_link = link_create(num, NULL);
 
-    //if the list is empty
-    if (list->head==NULL){
-        list->head=new_link;
-        list->last=new_link;
+    // if the list is empty
+    if (list->head == NULL)
+    {
+        list->head = new_link;
+        list->last = new_link;
     }
-    else {
+    else
+    {
         list->last->next = new_link;
         list->last = new_link;
     }
@@ -56,43 +67,54 @@ void ioopm_linked_list_append( ioopm_list_t *list, int num ) {
 
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
 {
+    assert(list);
     ioopm_link_t *lst = list->head;
-    int i=0;
+    int i = 0;
 
-    if(index==list->size){
+    if (index == list->size)
+    {
         ioopm_linked_list_append(list, value);
     }
-    else{
-        for (i=0; i<index; i++)
+    else
+    {
+        for (i = 0; i < index; i++)
         {
-            lst=lst->next;
+            lst = lst->next;
         }
-        ioopm_link_t *temp = lst; 
+        ioopm_link_t *temp = lst;
         lst->value = value;
         lst->next = temp;
-        list->size++; 
+        list->size++;
     }
 };
 
-int ioopm_linked_list_remove(ioopm_list_t *list, int index){
+int ioopm_linked_list_remove(ioopm_list_t *list, int index)
+{
+    assert(list);
     int currIndex = 0;
     ioopm_link_t *curr = list->head;
     ioopm_link_t *prev = NULL;
     ioopm_link_t *nxt = NULL;
-    if ( index == 0 ) {
+    if (index == 0)
+    {
         list->head = curr->next;
-    } else if ( index == list->size - 1) {
+    }
+    else if (index == list->size - 1)
+    {
         curr = list->last;
         list->last = NULL;
-    } else {
-        while ( currIndex < index-1 ) {
+    }
+    else
+    {
+        while (currIndex < index - 1)
+        {
             curr = curr->next;
             currIndex++;
         }
-        prev = curr; // index-1
+        prev = curr;       // index-1
         curr = curr->next; // index
-        nxt = curr->next; // index+1
-        prev->next = nxt; // disconnect curr from list
+        nxt = curr->next;  // index+1
+        prev->next = nxt;  // disconnect curr from list
     }
     int val = curr->value;
     list->size -= 1;
@@ -100,15 +122,23 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index){
     return val;
 }
 
-int ioopm_linked_list_get(ioopm_list_t *list, int index) {
+int ioopm_linked_list_get(ioopm_list_t *list, int index)
+{
+    assert(list);
     int currIndex = 0;
     ioopm_link_t *curr = list->head;
-    if ( index == 0 ) {
+    if (index == 0)
+    {
         return curr->value;
-    } else if ( index == list->size - 1) {
+    }
+    else if (index == list->size - 1)
+    {
         return list->last->value;
-    } else {
-        while ( currIndex < index ) {
+    }
+    else
+    {
+        while (currIndex < index)
+        {
             currIndex++;
             curr = curr->next;
         }
@@ -117,40 +147,56 @@ int ioopm_linked_list_get(ioopm_list_t *list, int index) {
     return val;
 }
 
-bool ioopm_linked_list_contains(ioopm_list_t *list, int element) {
+bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
+{
+    assert(list);
     ioopm_link_t *curr = list->head;
-    while ( curr != NULL ) {
-        if ( curr->value == element ) {
+    while (curr != NULL)
+    {
+        if (curr->value == element)
+        {
             return true;
-        } else {
+        }
+        else
+        {
             curr = curr->next;
         }
     }
     return false;
 }
 
-void print_list(ioopm_list_t *lst){
+void print_list(ioopm_list_t *lst)
+{
+    assert(lst);
     ioopm_link_t *curr_elem = lst->head;
-    printf("list: "); 
-    while ( curr_elem != NULL ) {
+    printf("list: ");
+    while (curr_elem != NULL)
+    {
         printf("%d, ", curr_elem->value);
         curr_elem = curr_elem->next;
     }
     printf("\n");
 }
 
-int ioopm_linked_list_size(ioopm_list_t *list) {
+int ioopm_linked_list_size(ioopm_list_t *list)
+{
+    assert(list);
     return list->size;
 }
 
-bool ioopm_linked_list_is_empty(ioopm_list_t *list){
-    return list->size==0;
+bool ioopm_linked_list_is_empty(ioopm_list_t *list)
+{
+    assert(list);
+    return list->size == 0;
 }
 
-void ioopm_linked_list_clear(ioopm_list_t *list){
+void ioopm_linked_list_clear(ioopm_list_t *list)
+{
+    assert(list);
     ioopm_link_t *curr = list->head;
 
-    while ( curr != NULL ) { 
+    while (curr != NULL)
+    {
         ioopm_link_t *tmp = curr; // Define a temp variable so we can keep the loop going without terminating it
         curr = curr->next;
         free(tmp); // Free the link allocation
@@ -160,10 +206,12 @@ void ioopm_linked_list_clear(ioopm_list_t *list){
     list->size = 0;
 }
 
-bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra) {
+bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
+{
+    assert(list);
     ioopm_link_t *curr = list->head;
     bool result = true;
-    while ( curr != NULL && result )
+    while (curr != NULL && result)
     {
         result = result && prop(curr->value, extra);
         curr = curr->next;
@@ -171,40 +219,104 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
     return result;
 }
 
-bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra) {
+bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
+{
+    assert(list);
     ioopm_link_t *curr = list->head;
     bool result = false;
-    while( curr != NULL && !result )
+    while (curr != NULL && !result)
     {
         result = result || prop(curr->value, extra);
-        curr = curr->next; 
+        curr = curr->next;
     }
     return result;
 }
 
-bool isSpecificInt(int val, void* extra) {
-    int *temp = (int*)extra;
-    int pred =  *temp;
-    if ( val == pred ) {
+bool isSpecificInt(int val, void *extra)
+{
+    int *temp = (int *)extra;
+    int pred = *temp;
+    if (val == pred)
+    {
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
 
-void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra) {
+void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra)
+{
+    assert(list);
     ioopm_link_t *curr = list->head;
-    while( curr != NULL )
+    while (curr != NULL)
     {
         curr->value = fun(curr->value, extra);
-        curr = curr->next; 
+        curr = curr->next;
     }
 }
 
-int add_int( int num, void *extra){
-    //turning extra to type int
-    int *temp = (int*)extra;
-    int adder =  *temp;
-    
+int add_int(int num, void *extra)
+{
+    // turning extra to type int
+    int *temp = (int *)extra;
+    int adder = *temp;
+
     return num + adder;
+}
+
+/********************************************************************/
+/*                          Iterator                                */
+/********************************************************************/
+
+ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
+{
+    ioopm_list_iterator_t *iter = calloc(1, sizeof(struct iter));
+    iter->current = list->head;
+    iter->list = list;
+    return iter;
+}
+
+void ioopm_iterator_destroy(ioopm_list_iterator_t **iter)
+{
+    assert(*iter);
+    free(*iter);
+    *iter = NULL;
+}
+
+bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
+{
+    assert(iter);
+    if (iter->current == NULL)
+    {
+        return false;
+    }
+    else if (iter->current->next == NULL)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+int ioopm_iterator_next(ioopm_list_iterator_t *iter)
+{
+    assert(iter);
+    assert(ioopm_iterator_has_next(iter));
+    iter->current = iter->current->next;
+    return iter->current->value;
+}
+
+void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
+{
+    assert(iter);
+    iter->current = iter->list->head;
+}
+
+int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+{
+    return iter->current->value;
 }
