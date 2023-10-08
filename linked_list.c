@@ -3,21 +3,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-struct link
-{
-    int value;
-    struct link *next;
-};
 
-struct list
-{
-    ioopm_link_t *head;
-    ioopm_link_t *last;
-    int size;
-};
 
 ioopm_list_t *ioopm_linked_list_create(void){
-    return calloc(1, sizeof(ioopm_list_t));
+    ioopm_list_t *lst = calloc(1, sizeof(ioopm_list_t));
+    lst->head = NULL;
+    lst->last = NULL;
+    return lst;
 }
 
 ioopm_link_t *link_create(int value, ioopm_link_t *next){
@@ -27,16 +19,18 @@ ioopm_link_t *link_create(int value, ioopm_link_t *next){
     return link;
 }
 
-void ioopm_linked_list_destroy(ioopm_list_t *list) {
-    assert(list); // Check if the list exists
-    ioopm_link_t *curr = list->head;
+void ioopm_linked_list_destroy(ioopm_list_t **list) {
+    assert(*list); // Check if the list exists
+    ioopm_link_t *curr = (*list)->head;
 
     while ( curr ) {
         ioopm_link_t *tmp = curr; // Define a temp variable so we can keep the loop going without terminating it
         curr = curr->next;
         free(tmp); // Free the link allocation
     }
-    free(list); // Free the list allocation
+    free(*list); // Free the list allocation
+    *list = NULL;
+
 }
 
 void ioopm_linked_list_prepend( ioopm_list_t *list, int num ) {
@@ -47,8 +41,18 @@ void ioopm_linked_list_prepend( ioopm_list_t *list, int num ) {
 
 void ioopm_linked_list_append( ioopm_list_t *list, int num ) {
     assert(list);
-    ioopm_link_t ins = list->last;
-    ins->next = link_create(num, NULL);
+    ioopm_link_t *new_link = link_create(num, NULL);
+
+    //if the list is empty
+    if (list->head==NULL){
+        list->head=new_link;
+        list->last=new_link;
+    }
+    else {
+        list->last->next = new_link;
+        list->last = new_link;
+    }
+
     list->size++;
 }
 

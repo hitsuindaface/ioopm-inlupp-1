@@ -4,13 +4,26 @@
 typedef struct list ioopm_list_t;
 typedef struct link ioopm_link_t;
 
+struct link
+{
+    int value;
+    struct link *next;
+};
+
+struct list
+{
+    ioopm_link_t *head;
+    ioopm_link_t *last;
+    int size;
+};
+
 /// @brief Creates a new empty list
 /// @return an empty linked list
 ioopm_list_t *ioopm_linked_list_create(void);
 
 /// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
 /// @param list the list to be destroyed
-void ioopm_linked_list_destroy(ioopm_list_t *list);
+void ioopm_linked_list_destroy(ioopm_list_t **list);
 
 /// @brief Insert at the end of a linked list in O(1) time
 /// @param list the linked list that will be appended

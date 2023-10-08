@@ -21,5 +21,5 @@ linktest: linked_list.o linked_test.o
 linked_list.o: linked_list.c linked_list.h
 	gcc -c -g -Wall linked_list.c
 
-linked_test.o: linked_list.c linked_list.h
+linked_test.o: linked_test.c 
 	gcc -c -g -Wall linked_list.c
