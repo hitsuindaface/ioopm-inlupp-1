@@ -5,22 +5,25 @@ clean:
 memhashtest: hashtest
 	valgrind --leak-check=full ./hashtest
 
-hashtest: hashtable.o unit_tests.o linked_list.o
-	gcc -g -Wall unit_tests.c -lcunit hash_table.c linked_list.c -o hashtest
+hashtest: hashtable.o unit_tests.o linked_list.o common.o
+	gcc -g -Wall unit_tests.c -lcunit hash_table.c linked_list.c common.c -o hashtest
 
-hashtable.o: hash_table.c hash_table.h linked_list.h iterator.h
+hashtable.o: hash_table.c hash_table.h linked_list.h iterator.h common.h
 	gcc -c -g -Wall hash_table.c
 
-unit_tests.o: unit_tests.c
+common.o: common.c common.h
+	gcc -c -g -Wall common.c
+
+unit_tests.o: unit_tests.c common.h
 	gcc -c -g -Wall unit_tests.c
 
 memlinktest: linktest
 	valgrind --leak-check=full ./linktest
 
-linktest: linked_list.o linked_test.o
-	gcc -g -Wall linked_test.c -lcunit linked_list.c -o linktest
+linktest: linked_list.o linked_test.o common.h
+	gcc -g -Wall linked_test.c -lcunit linked_list.c common.c -o linktest
 
-linked_list.o: linked_list.c linked_list.h iterator.h
+linked_list.o: linked_list.c linked_list.h iterator.h common.h
 	gcc -c -g -Wall linked_list.c
 
 linked_test.o: linked_test.c

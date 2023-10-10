@@ -7,7 +7,7 @@
 /********************************************************************/
 /*                         Linked List                              */
 /********************************************************************/
-ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function *fun)
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function fun)
 {
     ioopm_list_t *lst = calloc(1, sizeof(ioopm_list_t));
     lst->head = NULL;
@@ -16,7 +16,7 @@ ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function *fun)
     return lst;
 }
 
-ioopm_link_t *link_create(int value, ioopm_link_t *next)
+ioopm_link_t *link_create(elem_t value, ioopm_link_t *next)
 {
     ioopm_link_t *link = calloc(1, sizeof(ioopm_link_t));
     link->value = value;
@@ -39,14 +39,14 @@ void ioopm_linked_list_destroy(ioopm_list_t **list)
     *list = NULL;
 }
 
-void ioopm_linked_list_prepend(ioopm_list_t *list, int num)
+void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t num)
 {
     assert(list);
     list->head = link_create(num, list->head);
     list->size++;
 }
 
-void ioopm_linked_list_append(ioopm_list_t *list, int num)
+void ioopm_linked_list_append(ioopm_list_t *list, elem_t num)
 {
     assert(list);
     ioopm_link_t *new_link = link_create(num, NULL);
@@ -66,7 +66,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, int num)
     list->size++;
 }
 
-void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, int value) 
+void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, elem_t value) 
 {
     assert(list);
     ioopm_link_t *lst = list->head;
@@ -89,7 +89,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, int value)
     }
 };
 
-int ioopm_linked_list_remove(ioopm_list_t *list, size_t index) 
+elem_t ioopm_linked_list_remove(ioopm_list_t *list, size_t index) 
 {
     assert(list);
     size_t currIndex = 0; 
@@ -117,13 +117,13 @@ int ioopm_linked_list_remove(ioopm_list_t *list, size_t index)
         nxt = curr->next;  // index+1
         prev->next = nxt;  // disconnect curr from list
     }
-    int val = curr->value;
+    elem_t val = curr->value;
     list->size -= 1;
     free(curr);
     return val;
 }
 
-int ioopm_linked_list_get(ioopm_list_t *list, size_t index) 
+elem_t ioopm_linked_list_get(ioopm_list_t *list, size_t index) 
 {
     assert(list);
     size_t currIndex = 0; 
@@ -144,7 +144,7 @@ int ioopm_linked_list_get(ioopm_list_t *list, size_t index)
             curr = curr->next;
         }
     }
-    int val = curr->value;
+    elem_t val = curr->value;
     return val;
 }
 
@@ -173,7 +173,7 @@ void print_list(ioopm_list_t *lst)
     printf("list: ");
     while (curr_elem != NULL)
     {
-        printf("%d, ", curr_elem->value);
+        printf("%d, ", curr_elem->value.i);
         curr_elem = curr_elem->next;
     }
     printf("\n");
@@ -233,11 +233,11 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
     return result;
 }
 
-bool isSpecificInt(int val, void *extra)
+bool isSpecificInt(elem_t val, void *extra)
 {
-    int *temp = (int *)extra;
-    int pred = *temp;
-    if (val == pred)
+    elem_t *temp = (elem_t *)extra;
+    elem_t pred = *temp;
+    if (val.i == pred.i)
     {
         return true;
     }
@@ -253,18 +253,18 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function
     ioopm_link_t *curr = list->head;
     while (curr != NULL)
     {
-        curr->value = fun(curr->value, extra);
+        curr->value.i = fun(curr->value, extra).i;
         curr = curr->next;
     }
 }
 
-int add_int(int num, void *extra)
+elem_t add_int(elem_t num, void *extra)
 {
     // turning extra to type int
-    int *temp = (int *)extra;
-    int adder = *temp;
+    elem_t *temp = (elem_t *)extra;
+    elem_t adder = *temp;
 
-    return num + adder;
+    return int_elem(num.i + adder.i);
 }
 
 /********************************************************************/
@@ -308,6 +308,7 @@ elem_t ioopm_iterator_next(ioopm_list_iterator_t *iter)
     assert(iter);
     assert(ioopm_iterator_has_next(iter));
     iter->current = iter->current->next;
+
     return iter->current->value;
 }
 
