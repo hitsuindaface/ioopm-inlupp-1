@@ -1,5 +1,11 @@
 #pragma once
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "linked_list.h"
+#include "iterator.h"
+#include "common.h"
 
 /**
  * @file hash_table.h
@@ -16,8 +22,8 @@
 
 typedef struct hash_table ioopm_hash_table_t;
 typedef struct option option_t;
-typedef bool (*ioopm_predicate)(int key, char *value, void *extra);
-typedef void (*ioopm_apply_function)(int key, char **value, void *extra);
+typedef bool (*ioopm_predicate)(elem_t key, elem_t value, void *extra);
+typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
@@ -62,7 +68,7 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht);
 /// @brief return the keys for all entries in a hash map (in no particular order, but same as ioopm_hash_table_values)
 /// @param h hash table operated upon
 /// @return an array of keys for hash table h
-int *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
+ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
 
 /// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
 /// @param h hash table operated upon
@@ -109,13 +115,14 @@ struct entry
 struct hash_table
 {
   entry_t *buckets[17];
-  int entries;
+  size_t entries; 
+  ioopm_eq_function function;
 };
 
 struct option
 {
   bool success;
-  char *value;
+  elem_t *value;
 };
 
 void value_hej (int key, char **value, void *x);

@@ -1,6 +1,7 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "hash_table.h": "c"
+        "hash_table.h": "c",
+        "stdbool.h": "c"
     }
 }

@@ -5,10 +5,10 @@ clean:
 memhashtest: hashtest
 	valgrind --leak-check=full ./hashtest
 
-hashtest: hashtable.o unit_tests.o
-	gcc -g -Wall unit_tests.c -lcunit hash_table.c -o hashtest
+hashtest: hashtable.o unit_tests.o linked_list.o
+	gcc -g -Wall unit_tests.c -lcunit hash_table.c linked_list.c -o hashtest
 
-hashtable.o: hash_table.c hash_table.h
+hashtable.o: hash_table.c hash_table.h linked_list.h iterator.h
 	gcc -c -g -Wall hash_table.c
 
 unit_tests.o: unit_tests.c

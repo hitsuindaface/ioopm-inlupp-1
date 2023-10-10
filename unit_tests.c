@@ -1,8 +1,10 @@
 #include <CUnit/Basic.h>
 #include "utils.h"
 #include "hash_table.h"
+#include "iterator.h"
 #include <stdlib.h>
 #include <string.h>
+#include "linked_list.h"
 
 int init_suite(void)
 {
@@ -126,21 +128,23 @@ void test_ht_size()
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
   int key = 1;
   char *msg = "test should return 1";
-  int pre_insert = ht->entries;
+  size_t pre_insert = ht->entries; 
 
   // Make sure size is 0 pre-insertion
-  CU_ASSERT_EQUAL(pre_insert, 0);
+  size_t comp = 0; 
+  CU_ASSERT_EQUAL(pre_insert, comp);
 
   // Insert an element
   ioopm_hash_table_insert(ht, key, msg);
 
-  int post_insert = ht->entries;
+  size_t post_insert = ht->entries; 
 
-  CU_ASSERT_EQUAL(post_insert, 1);
+  comp = 1;
+  CU_ASSERT_EQUAL(post_insert, comp);
   // Remove an element
   ioopm_hash_table_entry_remove(ht, key);
-
-  CU_ASSERT_EQUAL(ht->entries, 0);
+  comp = 0;
+  CU_ASSERT_EQUAL(ht->entries, comp);
 
   ioopm_hash_table_destroy(&ht);
 }
@@ -148,80 +152,91 @@ void test_keys()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
   // Create an array keys of N integers and fill it with some keys
-  int array_size = 5;
-  int keys[5] = {3, 5, 6, 7, 80};
+  size_t array_size = 5; 
+
+  int keys[5] = {3, 5, 6, 7, 80}; 
 
   // Create another array found of N booleans, all initialized to false
   bool founds[5];
-  for (int i = 0; i < array_size; i++)
+
+  for (size_t i = 0; i < array_size; i++) 
   {
     founds[i] = false;
   };
 
   // Insert all the keys from keys into a fresh hash table
-  for (int i = 0; i < array_size; i++)
+  for (size_t i = 0; i < array_size; i++) 
   {
     ioopm_hash_table_insert(ht, keys[i], "value");
   };
 
-  int *ht_keys = ioopm_hash_table_keys(ht);
-  int ht_size = ht->entries;
+  ioopm_list_t *ht_keys = ioopm_hash_table_keys(ht); // TODO: array -> linked_list
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(ht_keys);
   bool is_found = false;
-
-  for (int i = 0; i < ht_size; i++)
+  int ht_element;
+  
+  while(true) 
   {
-
-    int ht_element = ht_keys[i];
-
-    for (int j = 0; j < array_size; j++)
+    ht_element = ioopm_iterator_current(iter);
+    for (size_t j = 0; j < array_size; j++) 
     {
-      if (ht_element == keys[j])
+
+      if (ht_element == keys[j]) // TODO: array -> linked_list
       {
         founds[j] = true;
         is_found = true;
       }
     }
-
     if (is_found == false)
     {
       CU_FAIL("Found a key that was never inserted!");
     }
+    
+    if (ioopm_iterator_has_next(iter))
+    {
+    ioopm_iterator_next(iter);  //increment element
+    }
+    else //curr is last element in iterator
+    { 
+      break; 
+    }
   }
 
-  for (int i = 0; i < array_size; ++i)
+  for (size_t i = 0; i < array_size; ++i)
   {
     CU_ASSERT_TRUE(founds[i]);
   }
   ioopm_hash_table_destroy(&ht);
-  free(ht_keys);
+  ioopm_linked_list_destroy(&ht_keys);
+  ioopm_iterator_destroy(&iter);
 }
 
 void test_values()
 {
   ioopm_hash_table_t *ht = ioopm_hash_table_create();
   // Create an array keys of N integers and fill it with some keys
-  int array_size = 5;
+  size_t array_size = 5; 
   int keys[5] = {1, 2, 3, 4, 5};
 
   // Create another array with values
   char *values[5] = {"one", "two", "three", "four", "five"};
 
   // Insert all the keys and values into a fresh hash table
-  for (int i = 0; i < array_size; i++)
+  for (size_t i = 0; i < array_size; i++) 
   {
-    ioopm_hash_table_insert(ht, keys[i], values[i]);
+    ioopm_hash_table_insert(ht, keys[i], values[i]); 
   };
 
-  int *ht_keys = ioopm_hash_table_keys(ht);
+  ioopm_list_t *ht_keys = ioopm_hash_table_keys(ht); // TODO: array -> linked_list
   char **ht_values = ioopm_hash_table_values(ht);
 
   // checking that all values were found in ioopm_hash_table_values
-  for (int i = 0; i < array_size; i++)
+  for (size_t i = 0; i < array_size; i++) 
   {
     bool is_found = false;
     char *ht_value = ht_values[i];
 
-    for (int j = 0; j < array_size; j++)
+    for (size_t j = 0; j < array_size; j++) 
     {
       if (ht_value == values[j])
       {
@@ -234,17 +249,21 @@ void test_values()
       CU_FAIL("Found a value that was never inserted!");
     }
   }
-
+  
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(ht_keys);
+  
   // checking that the corresponding key and value in ht have the same index in the arrays.
-  for (int i = 0; i < array_size - 1; i++)
+  for (size_t i = 0; i < array_size - 1; i++)
   {
-    int ht_key = ht_keys[i];
+    int ht_key = ioopm_iterator_current(iter); // TODO: array -> linked_list
     option_t expected_value = ioopm_hash_table_lookup(ht, ht_key);
 
+    ioopm_iterator_next(iter);
     CU_ASSERT_EQUAL(expected_value.value, ht_values[i]);
   }
   ioopm_hash_table_destroy(&ht);
-  free(ht_keys);
+  ioopm_linked_list_destroy(&ht_keys);
+  ioopm_iterator_destroy(&iter);
   free(ht_values);
 }
 

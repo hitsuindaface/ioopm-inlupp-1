@@ -7,11 +7,12 @@
 /********************************************************************/
 /*                         Linked List                              */
 /********************************************************************/
-ioopm_list_t *ioopm_linked_list_create(void)
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function *fun)
 {
     ioopm_list_t *lst = calloc(1, sizeof(ioopm_list_t));
     lst->head = NULL;
     lst->last = NULL;
+    lst->function = fun;
     return lst;
 }
 
@@ -65,11 +66,11 @@ void ioopm_linked_list_append(ioopm_list_t *list, int num)
     list->size++;
 }
 
-void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
+void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, int value) 
 {
     assert(list);
     ioopm_link_t *lst = list->head;
-    int i = 0;
+    size_t i = 0; 
 
     if (index == list->size)
     {
@@ -88,10 +89,10 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
     }
 };
 
-int ioopm_linked_list_remove(ioopm_list_t *list, int index)
+int ioopm_linked_list_remove(ioopm_list_t *list, size_t index) 
 {
     assert(list);
-    int currIndex = 0;
+    size_t currIndex = 0; 
     ioopm_link_t *curr = list->head;
     ioopm_link_t *prev = NULL;
     ioopm_link_t *nxt = NULL;
@@ -122,10 +123,10 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
     return val;
 }
 
-int ioopm_linked_list_get(ioopm_list_t *list, int index)
+int ioopm_linked_list_get(ioopm_list_t *list, size_t index) 
 {
     assert(list);
-    int currIndex = 0;
+    size_t currIndex = 0; 
     ioopm_link_t *curr = list->head;
     if (index == 0)
     {
@@ -147,13 +148,13 @@ int ioopm_linked_list_get(ioopm_list_t *list, int index)
     return val;
 }
 
-bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
+bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
 {
     assert(list);
     ioopm_link_t *curr = list->head;
     while (curr != NULL)
     {
-        if (curr->value == element)
+        if (list->function(curr->value, element))
         {
             return true;
         }
@@ -178,7 +179,7 @@ void print_list(ioopm_list_t *lst)
     printf("\n");
 }
 
-int ioopm_linked_list_size(ioopm_list_t *list)
+size_t ioopm_linked_list_size(ioopm_list_t *list) 
 {
     assert(list);
     return list->size;
@@ -302,7 +303,7 @@ bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
     }
 }
 
-int ioopm_iterator_next(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_next(ioopm_list_iterator_t *iter)
 {
     assert(iter);
     assert(ioopm_iterator_has_next(iter));
@@ -316,7 +317,7 @@ void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
     iter->current = iter->list->head;
 }
 
-int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)
 {
     return iter->current->value;
 }

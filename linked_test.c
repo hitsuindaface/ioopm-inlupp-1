@@ -127,7 +127,8 @@ void test_list_size()
 
   bool is_empty = ioopm_linked_list_is_empty(list);
   CU_ASSERT_TRUE(is_empty);
-  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), 0);
+  size_t sizeIsZero = 0;
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), sizeIsZero); 
 
   ioopm_linked_list_append(list, 1);
   ioopm_linked_list_append(list, 2);
@@ -135,7 +136,8 @@ void test_list_size()
 
   is_empty = ioopm_linked_list_is_empty(list);
 
-  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), 3);
+  size_t sizeIs3 = 3;
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), sizeIs3); 
   CU_ASSERT_FALSE(is_empty);
 
   ioopm_linked_list_destroy(&list);
@@ -156,7 +158,8 @@ void test_list_clear()
 
   CU_ASSERT_PTR_NULL(list->head);
   CU_ASSERT_PTR_NULL(list->last);
-  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), 0);
+  size_t sizeIsZero = 0;
+  CU_ASSERT_EQUAL(ioopm_linked_list_size(list), sizeIsZero); 
 
   ioopm_linked_list_destroy(&list);
 }
