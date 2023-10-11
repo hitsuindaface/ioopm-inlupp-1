@@ -23,7 +23,7 @@ int clean_suite(void)
 
 void test_create_destroy()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   CU_ASSERT_PTR_NOT_NULL(ht);
   ioopm_hash_table_destroy(&ht);
   CU_ASSERT_PTR_NULL(ht);
@@ -31,7 +31,7 @@ void test_create_destroy()
 
 void test_new_key()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   elem_t valid_key = int_elem(17); // A valid integer key
   elem_t msg = str_elem("test message");
 
@@ -54,7 +54,7 @@ void test_new_key()
 
 void test_dirty_key_use()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   elem_t key = int_elem(1); // A valid integer key
   elem_t msg1 = str_elem("test message 1");
   elem_t msg2 = str_elem("test message 2");
@@ -76,7 +76,7 @@ void test_dirty_key_use()
 
 void test_invalid_key()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   elem_t invalid_key = int_elem(-1); // An invalid integer key
   elem_t msg = str_elem("test message");
 
@@ -96,7 +96,7 @@ void test_invalid_key()
 
 void test_delete_key()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   elem_t key1 = int_elem(0); // A valid integer key
   elem_t key2 = int_elem(1);
   elem_t msg1 = str_elem("first msg");
@@ -126,7 +126,7 @@ void test_delete_key()
 
 void test_ht_size()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   elem_t key = int_elem(1);
   elem_t msg = str_elem("test should return 1");
   size_t pre_insert = ht->entries; 
@@ -151,7 +151,7 @@ void test_ht_size()
 }
 void test_keys()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   // Create an array keys of N integers and fill it with some keys
   size_t array_size = 5; 
 
@@ -214,7 +214,7 @@ void test_keys()
 
 void test_values()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
   // Create an array keys of N integers and fill it with some keys
   size_t array_size = 5; 
   elem_t keys[5] = {int_elem(1), int_elem(2), int_elem(3), int_elem(4), int_elem(5)};
@@ -229,7 +229,7 @@ void test_values()
   };
 
   ioopm_list_t *ht_keys = ioopm_hash_table_keys(ht); // TODO: array -> linked_list
-  elem_t *ht_values = ioopm_hash_table_values(ht);
+  ioopm_list_t *ht_values = ioopm_hash_table_values(ht);
 
   // checking that all values were found in ioopm_hash_table_values
   for (size_t i = 0; i < array_size; i++) 
@@ -270,7 +270,7 @@ void test_values()
 
 void test_has_keys()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
 
   // testing valid inserted keys
   elem_t valid_key1 = int_elem(1);
@@ -301,7 +301,7 @@ void test_has_keys()
 
 void test_has_values()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
 
   // testing valid inserted keys
   elem_t val1 = str_elem("val1");
@@ -322,7 +322,7 @@ void test_has_values()
 
 void test_apply_to_all()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
 
   elem_t val1 = str_elem("cola");
   elem_t val2 = str_elem("sprite");
@@ -351,7 +351,7 @@ void test_apply_to_all()
 
 void test_any()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
 
   //just one 
   elem_t key1 = int_elem(1);
@@ -395,7 +395,7 @@ void test_any()
 
 void test_all()
 {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare);
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(string_compare, int_hash_function);
 
   //just one 
   elem_t key1 = int_elem(1);

@@ -25,10 +25,11 @@ typedef struct option option_t;
 typedef struct entry entry_t;
 typedef bool (*ioopm_predicate)(elem_t key, elem_t value, void *extra);
 typedef void (*ioopm_apply_function)(elem_t key, elem_t *value, void *extra);
+typedef int (*hash_fn)(elem_t elem);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
-ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function fun);
+ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function fun, hash_fn hash);
 
 /// @brief Delete a hash table and free its memory
 /// @param ht a hash table to be deleted
@@ -74,7 +75,7 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
 /// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
 /// @param h hash table operated upon
 /// @return an array of values for hash table h
-elem_t *ioopm_hash_table_values(ioopm_hash_table_t *ht);
+ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht);
 
 /// @brief check if a hash table has an entry with a given key
 /// @param h hash table operated upon
@@ -104,6 +105,8 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 /// @param arg extra argument to apply_fun
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
+
+
 struct entry
 {
   elem_t key;       // holds the key
@@ -116,6 +119,7 @@ struct hash_table
   entry_t *buckets[17];
   size_t entries; 
   ioopm_eq_function function;
+  hash_fn hash_func;
 };
 
 struct option
@@ -127,3 +131,9 @@ struct option
 void value_hej (elem_t key, elem_t *value, void *x);
 
 bool search_value(elem_t key, elem_t value, void *x);
+
+int string_hash_function(elem_t key);
+
+int get_hash(ioopm_hash_table_t *ht, elem_t key);
+
+int int_hash_function(elem_t key);

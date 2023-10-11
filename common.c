@@ -1,4 +1,5 @@
 #include "common.h"
+#include "hash_table.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
