@@ -284,7 +284,8 @@ bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
     }
   }
 
-  free(vals);
+  ioopm_linked_list_destroy(&vals);
+  ioopm_iterator_destroy(&values_ht);
 
   return isTrue;
 }

@@ -230,16 +230,16 @@ void test_values()
 
   ioopm_list_t *ht_keys = ioopm_hash_table_keys(ht); // TODO: array -> linked_list
   ioopm_list_t *ht_values = ioopm_hash_table_values(ht);
+  ioopm_list_iterator_t *iter_values = ioopm_list_iterator(ht_values);
+  elem_t curr_value = ioopm_iterator_current(iter_values);
 
   // checking that all values were found in ioopm_hash_table_values
   for (size_t i = 0; i < array_size; i++) 
   {
     bool is_found = false;
-    elem_t ht_value = ht_values[i];
-
     for (size_t j = 0; j < array_size; j++) 
     {
-      if (ht_value.s == values[j].s)
+      if (curr_value.s == values[j].s)
       {
         is_found = true;
       }
@@ -249,22 +249,36 @@ void test_values()
     {
       CU_FAIL("Found a value that was never inserted!");
     }
+    if (ioopm_iterator_has_next(iter_values)) {
+      curr_value=ioopm_iterator_next(iter_values);
+    } else  {
+      break;
+    }
+    
   }
-  
-  ioopm_list_iterator_t *iter = ioopm_list_iterator(ht_keys);
+  ioopm_iterator_reset(iter_values);
+  ioopm_list_iterator_t *iter_keys = ioopm_list_iterator(ht_keys);
   
   // checking that the corresponding key and value in ht have the same index in the arrays.
-  for (size_t i = 0; i < array_size - 1; i++)
+  elem_t ht_val = ioopm_iterator_current(iter_values);
+  elem_t ht_key = ioopm_iterator_current(iter_keys);
+  while (iter_keys)
   {
-    elem_t ht_key = ioopm_iterator_current(iter); // TODO: array -> linked_list
     option_t expected_value = ioopm_hash_table_lookup(ht, ht_key);
-
-    ioopm_iterator_next(iter);
-    CU_ASSERT_EQUAL(expected_value.value.s, ht_values[i].s);
+    CU_ASSERT_EQUAL(expected_value.value.s, ht_val.s);    
+    
+    if ( ioopm_iterator_has_next(iter_keys) && ioopm_iterator_has_next(iter_values)){
+      ioopm_iterator_next(iter_keys);
+      ioopm_iterator_next(iter_values);
+    } else {
+      break;
+    }
   }
   ioopm_hash_table_destroy(&ht);
   ioopm_linked_list_destroy(&ht_keys);
-  ioopm_iterator_destroy(&iter);
+  ioopm_iterator_destroy(&iter_keys);
+  ioopm_linked_list_destroy(&ht_values);
+  ioopm_iterator_destroy(&iter_values);
   free(ht_values);
 }
 
