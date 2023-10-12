@@ -29,7 +29,7 @@ typedef int (*hash_fn)(elem_t elem);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
-ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function fun, hash_fn hash);
+ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function key_fun ,ioopm_eq_function value_fun, hash_fn hash);
 
 /// @brief Delete a hash table and free its memory
 /// @param ht a hash table to be deleted
@@ -118,7 +118,8 @@ struct hash_table
 {
   entry_t *buckets[17];
   size_t entries; 
-  ioopm_eq_function function;
+  ioopm_eq_function key_function;
+  ioopm_eq_function value_function;
   hash_fn hash_func;
 };
 

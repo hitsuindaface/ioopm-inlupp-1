@@ -1,6 +1,7 @@
 #include "linked_list.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include "iterator.h"
 
@@ -10,8 +11,7 @@
 ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function fun)
 {
     ioopm_list_t *lst = calloc(1, sizeof(ioopm_list_t));
-    lst->head = NULL;
-    lst->last = NULL;
+    lst->head = lst->last = calloc(1, sizeof(ioopm_link_t));
     lst->function = fun;
     return lst;
 }
@@ -42,7 +42,7 @@ void ioopm_linked_list_destroy(ioopm_list_t **list)
 void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t num)
 {
     assert(list);
-    list->head = link_create(num, list->head);
+    list->head->next = link_create(num, list->head->next->next);
     list->size++;
 }
 
@@ -69,7 +69,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, elem_t num)
 void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, elem_t value) 
 {
     assert(list);
-    ioopm_link_t *lst = list->head;
+    ioopm_link_t *lst = list->head->next;
     size_t i = 0; 
 
     if (index == list->size)
@@ -78,6 +78,7 @@ void ioopm_linked_list_insert(ioopm_list_t *list, size_t index, elem_t value)
     }
     else
     {
+        //finds previous link
         for (i = 0; i < index; i++)
         {
             lst = lst->next;
@@ -250,10 +251,10 @@ bool isSpecificInt(elem_t val, void *extra)
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra)
 {
     assert(list);
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
     while (curr != NULL)
     {
-        curr->value.i = fun(curr->value, extra).i;
+        fun(&curr->value, extra);
         curr = curr->next;
     }
 }
@@ -321,4 +322,15 @@ void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
 elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)
 {
     return iter->current->value;
+}
+
+char **ioopm_list_to_str_array(ioopm_list_t *lst) {
+    char **arr = calloc(1, sizeof(char *) * lst->size);
+    ioopm_link_t *cursor = lst->head->next;
+    for(int i = 0; i<lst->size; i++){
+        arr[i] = cursor->value.s;
+        cursor = cursor->next;
+    }
+    ioopm_linked_list_destroy(&lst);
+    return arr;
 }

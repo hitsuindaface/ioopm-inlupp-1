@@ -28,3 +28,10 @@ linked_list.o: linked_list.c linked_list.h iterator.h common.h
 
 linked_test.o: linked_test.c
 	gcc -c -g -Wall linked_list.c
+	
+freqtest: freq-count.o hashtable.o unit_tests.o linked_list.o common.o
+	gcc -g -Wall freq-count.c -lcunit hash_table.c linked_list.c common.c -o freqtest
+	
+freq-count.o: freq-count.c common.h iterator.h linked_list.h hash_table.h
+	gcc -c -g -Wall freq-count.c
+

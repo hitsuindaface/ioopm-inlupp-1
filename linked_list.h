@@ -3,7 +3,7 @@
 #include "common.h"
 
 typedef bool (*ioopm_int_predicate)(elem_t, void *extra);
-typedef elem_t (*ioopm_apply_int_function)(elem_t, void *extra);
+typedef void (*ioopm_apply_int_function)(elem_t*, void *extra);
 
 typedef struct list ioopm_list_t;
 typedef struct link ioopm_link_t;
@@ -117,3 +117,5 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra);
 
 elem_t add_int(elem_t num, void *extra);
+
+char **ioopm_list_to_str_array(ioopm_list_t *lst);
