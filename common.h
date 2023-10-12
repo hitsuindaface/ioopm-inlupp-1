@@ -13,19 +13,25 @@ typedef bool(*ioopm_eq_function)(elem_t a, elem_t b);
 #define ptr_elem(x) (elem_t) { .p=(x) }
 #define str_elem(x) (elem_t) { .s=(x) }
 
+/// @brief compares two string elements
+/// @param a string_element to compare
+/// @param b other string_element to compare
+/// @return true if a and b are the same, else return false
 bool string_compare(elem_t a, elem_t b);
 
+/// @brief compares two int elements
+/// @param a int_element to compare
+/// @param b other int_element to compare
+/// @return true if a and b are the same, else return false
 bool int_compare(elem_t a, elem_t b);
 
 
 union elem
 {
-  /// TODO: update the names of the fields to something better? 
   int i;
-  unsigned int u;
-  bool b;
-  float f;
-  void *p;
-  char *s;
-  /// other choices certainly possible
+  unsigned int u; //field holding unsigned integer
+  bool b; //field holding boolean
+  float f; //field holding float integer
+  void *p; //field holding pointer
+  char *s; //field holding string
 };

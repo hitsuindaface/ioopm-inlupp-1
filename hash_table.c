@@ -236,7 +236,7 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht) // TODO: array -> li
 ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
 
-  ioopm_eq_function fun = ht->key_function;
+  ioopm_eq_function fun = ht->value_function;
   ioopm_list_t *vals = ioopm_linked_list_create(fun);
   int count = 0;
 

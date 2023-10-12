@@ -41,7 +41,7 @@ void test_link_append()
   ioopm_linked_list_append(lst, int_elem(2));
   ioopm_linked_list_append(lst, int_elem(3));
 
-  ioopm_link_t *first_elem = lst->head;
+  ioopm_link_t *first_elem = lst->head->next;
   ioopm_link_t *second_elem = first_elem->next;
   ioopm_link_t *third_elem = second_elem->next;
 
@@ -66,11 +66,12 @@ void test_linked_list_remove()
   CU_ASSERT_EQUAL(testList->size, 4);
   elem_t rmv_val = ioopm_linked_list_remove(testList, 1);
   CU_ASSERT_EQUAL(rmv_val.i, 2);
-  ioopm_link_t *first_elem = testList->head;
+  ioopm_link_t *first_elem = testList->head->next;
   ioopm_link_t *second_elem = first_elem->next;
   CU_ASSERT_EQUAL(first_elem->next->value.i, 3);
   CU_ASSERT_EQUAL(second_elem->value.i, 3);
   CU_ASSERT_EQUAL(testList->size, 3);
+  
   ioopm_linked_list_destroy(&testList);
 }
 
@@ -83,7 +84,7 @@ void test_link_prepend()
   ioopm_linked_list_append(lst, int_elem(3));
   ioopm_linked_list_prepend(lst, int_elem(4));
 
-  ioopm_link_t *first_elem = lst->head;
+  ioopm_link_t *first_elem = lst->head->next;
   elem_t value = first_elem->value;
 
   CU_ASSERT_EQUAL(value.i, 4);
@@ -157,7 +158,7 @@ void test_list_clear()
   bool is_empty = ioopm_linked_list_is_empty(list);
   CU_ASSERT_TRUE(is_empty);
 
-  CU_ASSERT_PTR_NULL(list->head);
+  CU_ASSERT_PTR_NULL(list->head->next);
   CU_ASSERT_PTR_NULL(list->last);
   size_t sizeIsZero = 0;
   CU_ASSERT_EQUAL(ioopm_linked_list_size(list), sizeIsZero); 
@@ -233,7 +234,7 @@ void test_apply_all()
   ioopm_linked_list_append(list, int_elem(50));
 
   elem_t num = int_elem(10);
-  CU_ASSERT_EQUAL(list->head->value.i, 1);
+  CU_ASSERT_EQUAL(list->head->next->value.i, 1);
   ioopm_linked_list_apply_to_all(list, add_int, &num);
 
   elem_t val1 = ioopm_linked_list_get(list, 0);
@@ -265,7 +266,7 @@ void test_iter_create_destroy()
   ioopm_list_t *compList = iter->list;
 
   CU_ASSERT_PTR_NOT_NULL(iter);
-  CU_ASSERT_EQUAL(first.i, lst->head->value.i);
+  CU_ASSERT_EQUAL(first.i, lst->head->next->value.i);
   CU_ASSERT_EQUAL(compList->size, 1);
   CU_ASSERT_PTR_NOT_NULL(compList->last);
 

@@ -3,7 +3,7 @@
 #include "common.h"
 
 typedef bool (*ioopm_int_predicate)(elem_t, void *extra);
-typedef void (*ioopm_apply_int_function)(elem_t*, void *extra);
+typedef void (*ioopm_apply_int_function)(elem_t *, void *extra);
 
 typedef struct list ioopm_list_t;
 typedef struct link ioopm_link_t;
@@ -12,16 +12,16 @@ typedef unsigned long size_t;
 
 struct link
 {
-    elem_t value;
-    struct link *next;
+    elem_t value; // holds the value
+    struct link *next; // points to the next link (possibly NULL)
 };
 
 struct list
 {
-    ioopm_link_t *head;
-    ioopm_link_t *last;
-    size_t size; 
-    ioopm_eq_function function;
+    ioopm_link_t *head; //first element in list - dummy (doesent hold any actual values)
+    ioopm_link_t *last; //holds the last link in the list 
+    size_t size;  // total amount of links in the list
+    ioopm_eq_function function; //function that compares values in the list
 };
 
 /// @brief Creates a new empty list
@@ -100,6 +100,10 @@ void ioopm_linked_list_clear(ioopm_list_t *list);
 /// @return true if prop holds for all elements in the list, else false
 bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra);
 
+/// @brief compares two integer values and returns true if they are the same
+/// @param val value from hashtable to compare
+/// @param extra value sought
+/// @return true if the value sought is found, else return false
 bool isSpecificInt(elem_t val, void *extra);
 
 /// @brief Test if a supplied property holds for any element in a list.
@@ -116,6 +120,12 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra);
 
-elem_t add_int(elem_t num, void *extra);
+/// @brief Adds integer to an integer-element
+/// @param num pointer to the element being operated on
+/// @param extra the integer to be added
+void add_int(elem_t *num, void *extra);
 
+/// @brief Turns a linked list with strings to an array
+/// @param lst linked list which content will be put into a array
+/// @return an array of strings
 char **ioopm_list_to_str_array(ioopm_list_t *lst);

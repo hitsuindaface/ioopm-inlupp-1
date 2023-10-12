@@ -27,7 +27,7 @@ ioopm_link_t *link_create(elem_t value, ioopm_link_t *next)
 void ioopm_linked_list_destroy(ioopm_list_t **list)
 {
     assert(*list); // Check if the list exists
-    ioopm_link_t *curr = (*list)->head;
+    ioopm_link_t *curr = (*list)->head->next;
 
     while (curr)
     {
@@ -35,6 +35,7 @@ void ioopm_linked_list_destroy(ioopm_list_t **list)
         curr = curr->next;
         free(tmp); // Free the link allocation
     }
+    free((*list)->head);
     free(*list); // Free the list allocation
     *list = NULL;
 }
@@ -42,7 +43,8 @@ void ioopm_linked_list_destroy(ioopm_list_t **list)
 void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t num)
 {
     assert(list);
-    list->head->next = link_create(num, list->head->next->next);
+    ioopm_link_t *tmp = list->head->next; //first actual element -> temp
+    list->head->next = link_create(num, tmp); //insert new link and put tmp next in list
     list->size++;
 }
 
@@ -52,13 +54,13 @@ void ioopm_linked_list_append(ioopm_list_t *list, elem_t num)
     ioopm_link_t *new_link = link_create(num, NULL);
 
     // if the list is empty
-    if (list->head == NULL)
+    if (list->head->next == NULL)
     {
-        list->head = new_link;
+        list->head->next = new_link;
         list->last = new_link;
     }
     else
-    {
+    {   
         list->last->next = new_link;
         list->last = new_link;
     }
@@ -94,7 +96,7 @@ elem_t ioopm_linked_list_remove(ioopm_list_t *list, size_t index)
 {
     assert(list);
     size_t currIndex = 0; 
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
     ioopm_link_t *prev = NULL;
     ioopm_link_t *nxt = NULL;
     if (index == 0)
@@ -128,7 +130,7 @@ elem_t ioopm_linked_list_get(ioopm_list_t *list, size_t index)
 {
     assert(list);
     size_t currIndex = 0; 
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
     if (index == 0)
     {
         return curr->value;
@@ -195,7 +197,7 @@ bool ioopm_linked_list_is_empty(ioopm_list_t *list)
 void ioopm_linked_list_clear(ioopm_list_t *list)
 {
     assert(list);
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
 
     while (curr != NULL)
     {
@@ -203,7 +205,7 @@ void ioopm_linked_list_clear(ioopm_list_t *list)
         curr = curr->next;
         free(tmp); // Free the link allocation
     }
-    list->head = NULL;
+    list->head->next = NULL;
     list->last = NULL;
     list->size = 0;
 }
@@ -211,7 +213,7 @@ void ioopm_linked_list_clear(ioopm_list_t *list)
 bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
     assert(list);
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
     bool result = true;
     while (curr != NULL && result)
     {
@@ -224,7 +226,7 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *extra)
 {
     assert(list);
-    ioopm_link_t *curr = list->head;
+    ioopm_link_t *curr = list->head->next;
     bool result = false;
     while (curr != NULL && !result)
     {
@@ -254,18 +256,18 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function
     ioopm_link_t *curr = list->head->next;
     while (curr != NULL)
     {
-        fun(&curr->value, extra);
+        fun(&(curr->value), extra);
         curr = curr->next;
     }
 }
 
-elem_t add_int(elem_t num, void *extra)
+void add_int(elem_t *num, void *extra)
 {
     // turning extra to type int
     elem_t *temp = (elem_t *)extra;
     elem_t adder = *temp;
 
-    return int_elem(num.i + adder.i);
+    *num = int_elem(num->i + adder.i);
 }
 
 /********************************************************************/
@@ -275,7 +277,7 @@ elem_t add_int(elem_t num, void *extra)
 ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
 {
     ioopm_list_iterator_t *iter = calloc(1, sizeof(struct iter));
-    iter->current = list->head;
+    iter->current = list->head->next;
     iter->list = list;
     return iter;
 }
@@ -316,7 +318,7 @@ elem_t ioopm_iterator_next(ioopm_list_iterator_t *iter)
 void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
 {
     assert(iter);
-    iter->current = iter->list->head;
+    iter->current = iter->list->head->next;
 }
 
 elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)

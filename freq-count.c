@@ -116,20 +116,7 @@ int main(int argc, char *argv[])
     // an array to use `sort_keys` (perhaps using an iterator?)
 
     char **keys = (char **)ioopm_list_to_str_array(ioopm_hash_table_keys(ht));
-
     int size = ht->entries;
-    
-
-    //print the array of keys
-    int i = 0;
-    char *key = keys[i];
-    char character = key[i];
-
-    while (i<20){
-      printf("%s", key);
-      i++;
-      key = keys[i];
-    }
 
     sort_keys(keys, size);
 
